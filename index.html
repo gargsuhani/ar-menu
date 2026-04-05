@@ -7,11 +7,7 @@
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       background: #111;
@@ -44,7 +40,6 @@
       position: relative;
     }
 
-    /* Normal view nav row */
     .nav-row {
       display: flex;
       align-items: center;
@@ -65,14 +60,9 @@
       z-index: 999;
     }
 
-    .arrow-btn:hover {
-      background: #ffbf00;
-    }
+    .arrow-btn:hover { background: #ffbf00; }
 
-    .dots {
-      display: flex;
-      gap: 8px;
-    }
+    .dots { display: flex; gap: 8px; }
 
     .dot {
       width: 10px;
@@ -82,11 +72,25 @@
       transition: background 0.3s;
     }
 
-    .dot.active {
-      background: #f0a500;
+    .dot.active { background: #f0a500; }
+
+    /* Normal view ingredients button */
+    #ingredients-btn {
+      margin-top: 20px;
+      background: transparent;
+      border: 2px solid #f0a500;
+      color: #f0a500;
+      padding: 10px 28px;
+      border-radius: 25px;
+      font-size: 15px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.3s;
     }
 
-    /* AR overlay — sits on top of AR camera view */
+    #ingredients-btn:hover { background: #f0a500; color: #111; }
+
+    /* AR overlay — floats over camera */
     .ar-overlay {
       position: absolute;
       bottom: 80px;
@@ -99,7 +103,6 @@
       z-index: 999;
     }
 
-    /* Item name shown inside AR view */
     .ar-item-name {
       background: rgba(0,0,0,0.6);
       color: white;
@@ -115,35 +118,27 @@
       gap: 30px;
     }
 
-    /* View ingredients button */
-    #ingredients-btn {
-      margin-top: 20px;
+    /* AR ingredients button */
+    #ar-ingredients-btn {
       background: transparent;
       border: 2px solid #f0a500;
       color: #f0a500;
-      padding: 10px 28px;
+      padding: 8px 22px;
       border-radius: 25px;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
-      letter-spacing: 1px;
-      transition: all 0.3s;
+      pointer-events: auto;
     }
 
-    #ingredients-btn:hover {
-      background: #f0a500;
-      color: #111;
-    }
-
-    /* Dark overlay behind panel */
+    /* Ingredients panel — works in both normal and AR */
     #overlay {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.6);
-      z-index: 10;
+      z-index: 100;
     }
 
-    /* Slide up ingredients panel */
     #ingredients-panel {
       position: fixed;
       bottom: -100%;
@@ -152,13 +147,11 @@
       background: #1e1e1e;
       border-radius: 24px 24px 0 0;
       padding: 28px 24px;
-      z-index: 20;
+      z-index: 200;
       transition: bottom 0.4s ease;
     }
 
-    #ingredients-panel.open {
-      bottom: 0;
-    }
+    #ingredients-panel.open { bottom: 0; }
 
     #panel-title {
       font-size: 20px;
@@ -200,9 +193,7 @@
       cursor: pointer;
     }
 
-    #close-btn:hover {
-      background: #ffbf00;
-    }
+    #close-btn:hover { background: #ffbf00; }
   </style>
 </head>
 
@@ -220,7 +211,7 @@
     ar
     ar-modes="webxr scene-viewer quick-look"
   >
-    <!-- Buttons inside model-viewer so they show in AR mode too -->
+    <!-- Everything inside here shows in AR mode -->
     <div class="ar-overlay" slot="default">
       <div class="ar-item-name" id="ar-item-name">Margherita Pizza</div>
       <div class="ar-nav-row">
@@ -228,23 +219,21 @@
         <div class="dots" id="ar-dots"></div>
         <button class="arrow-btn" onclick="navigate(1)">→</button>
       </div>
+      <button id="ar-ingredients-btn" onclick="openPanel()">🧾 Ingredients</button>
     </div>
   </model-viewer>
 
-  <!-- Normal view nav row (outside AR) -->
+  <!-- Normal view controls -->
   <div class="nav-row">
     <button class="arrow-btn" onclick="navigate(-1)">←</button>
     <div class="dots" id="dots"></div>
     <button class="arrow-btn" onclick="navigate(1)">→</button>
   </div>
-
-  <!-- Ingredients button -->
   <button id="ingredients-btn" onclick="openPanel()">🧾 View Ingredients</button>
 
-  <!-- Overlay -->
+  <!-- Overlay + panel — fixed position works in both normal and AR -->
   <div id="overlay" onclick="closePanel()"></div>
 
-  <!-- Ingredients slide-up panel -->
   <div id="ingredients-panel">
     <div id="panel-title">Ingredients</div>
     <div id="panel-subtitle">Tap anywhere outside to close</div>
@@ -253,8 +242,7 @@
   </div>
 
   <script>
-    // ── YOUR MENU DATA ──────────────────────────────
-    const menuItems = [
+   const menuItems = [
       {
         name: "Margherita Pizza",
         price: "₹299",
@@ -263,29 +251,27 @@
       },
       {
         name: "Garden Fresh",
-        price: "₹199",
+        price: "₹399",
         model: "pizza.glb",
         ingredients: ["Beef Patty", "Cheddar Cheese", "Lettuce", "Tomato", "Olive Oil", "Pizza Dough"]
       },
       {
         name: "Pepperoni Pizza",
-        price: "₹249",
+        price: "₹449",
         model: "pizza1.glb",
         ingredients: ["Pepperoni", "Olive", "Onion", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"]
       },
       {
         name: "Chicken Pizza",
-        price: "₹399",
+        price: "₹499",
         model: "pizza3.glb",
         ingredients: ["Chicken ", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"]
       }
     ];
-    // ───────────────────────────────────────────────
-
     const BASE_URL = "https://raw.githubusercontent.com/gargsuhani/ar-menu/main/";
     let current = 0;
 
-    // Build dots for both normal and AR view
+    // Build dots for both views
     function buildDots(containerId) {
       const container = document.getElementById(containerId);
       menuItems.forEach((_, i) => {
@@ -306,16 +292,11 @@
 
     function updateDisplay() {
       const item = menuItems[current];
-
-      // Update model
       document.getElementById("viewer").src = BASE_URL + item.model;
-
-      // Update name and price
       document.getElementById("item-name").textContent = item.name;
       document.getElementById("item-price").textContent = item.price;
       document.getElementById("ar-item-name").textContent = item.name;
 
-      // Update dots in both rows
       menuItems.forEach((_, i) => {
         const dot = document.getElementById("dots-dot-" + i);
         const arDot = document.getElementById("ar-dots-dot-" + i);
@@ -324,7 +305,6 @@
       });
     }
 
-    // Open ingredients panel
     function openPanel() {
       const item = menuItems[current];
       const list = document.getElementById("ingredient-list");
@@ -340,7 +320,6 @@
       document.getElementById("overlay").style.display = "block";
     }
 
-    // Close ingredients panel
     function closePanel() {
       document.getElementById("ingredients-panel").classList.remove("open");
       document.getElementById("overlay").style.display = "none";
