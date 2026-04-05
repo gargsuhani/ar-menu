@@ -31,12 +31,44 @@
     #item-price {
       font-size: 18px;
       color: #f0a500;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
+    }
+
+    /* Allergen bar — normal view */
+    .allergen-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      max-width: 320px;
+    }
+
+    .allergen-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .allergen-badge.contains {
+      background: rgba(220, 50, 50, 0.2);
+      border: 1px solid #dc3232;
+      color: #ff6b6b;
+    }
+
+    .allergen-badge.free {
+      background: rgba(50, 200, 100, 0.2);
+      border: 1px solid #32c864;
+      color: #5fdd9d;
     }
 
     model-viewer {
       width: 320px;
-      height: 320px;
+      height: 280px;
       position: relative;
     }
 
@@ -44,7 +76,7 @@
       display: flex;
       align-items: center;
       gap: 30px;
-      margin-top: 16px;
+      margin-top: 12px;
     }
 
     .arrow-btn {
@@ -74,9 +106,8 @@
 
     .dot.active { background: #f0a500; }
 
-    /* Normal view ingredients button */
     #ingredients-btn {
-      margin-top: 20px;
+      margin-top: 14px;
       background: transparent;
       border: 2px solid #f0a500;
       color: #f0a500;
@@ -90,7 +121,7 @@
 
     #ingredients-btn:hover { background: #f0a500; color: #111; }
 
-    /* AR overlay — floats over camera */
+    /* AR overlay */
     .ar-overlay {
       position: absolute;
       bottom: 80px;
@@ -98,7 +129,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       pointer-events: auto;
       z-index: 999;
     }
@@ -112,13 +143,42 @@
       border-radius: 20px;
     }
 
+    /* Allergen bar inside AR */
+    .ar-allergen-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      max-width: 320px;
+      padding: 0 10px;
+    }
+
+    .ar-allergen-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .ar-allergen-badge.contains {
+      background: rgba(220, 50, 50, 0.85);
+      color: white;
+    }
+
+    .ar-allergen-badge.free {
+      background: rgba(50, 200, 100, 0.85);
+      color: white;
+    }
+
     .ar-nav-row {
       display: flex;
       align-items: center;
       gap: 30px;
     }
 
-    /* AR ingredients button */
     #ar-ingredients-btn {
       background: transparent;
       border: 2px solid #f0a500;
@@ -130,7 +190,7 @@
       pointer-events: auto;
     }
 
-    /* Ingredients panel — works in both normal and AR */
+    /* Ingredients panel */
     #overlay {
       display: none;
       position: fixed;
@@ -162,7 +222,27 @@
     #panel-subtitle {
       font-size: 13px;
       color: #888;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* Allergens inside panel */
+    .panel-allergen-section {
+      margin-bottom: 16px;
+    }
+
+    .panel-allergen-title {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .panel-allergen-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
     .ingredient-list {
@@ -202,6 +282,9 @@
   <div id="item-name">Margherita Pizza</div>
   <div id="item-price">₹299</div>
 
+  <!-- Allergen bar normal view -->
+  <div class="allergen-bar" id="allergen-bar"></div>
+
   <model-viewer
     id="viewer"
     src="https://raw.githubusercontent.com/gargsuhani/ar-menu/main/pizza.glb"
@@ -211,9 +294,12 @@
     ar
     ar-modes="webxr scene-viewer quick-look"
   >
-    <!-- Everything inside here shows in AR mode -->
     <div class="ar-overlay" slot="default">
       <div class="ar-item-name" id="ar-item-name">Margherita Pizza</div>
+
+      <!-- Allergen bar AR view -->
+      <div class="ar-allergen-bar" id="ar-allergen-bar"></div>
+
       <div class="ar-nav-row">
         <button class="arrow-btn" onclick="navigate(-1)">←</button>
         <div class="dots" id="ar-dots"></div>
@@ -223,55 +309,78 @@
     </div>
   </model-viewer>
 
-  <!-- Normal view controls -->
   <div class="nav-row">
     <button class="arrow-btn" onclick="navigate(-1)">←</button>
     <div class="dots" id="dots"></div>
     <button class="arrow-btn" onclick="navigate(1)">→</button>
   </div>
+
   <button id="ingredients-btn" onclick="openPanel()">🧾 View Ingredients</button>
 
-  <!-- Overlay + panel — fixed position works in both normal and AR -->
   <div id="overlay" onclick="closePanel()"></div>
 
   <div id="ingredients-panel">
     <div id="panel-title">Ingredients</div>
-    <div id="panel-subtitle">Tap anywhere outside to close</div>
+    <div id="panel-subtitle">Tap outside to close</div>
+
+    <!-- Allergens inside panel -->
+    <div class="panel-allergen-section">
+      <div class="panel-allergen-title">⚠️ Allergens</div>
+      <div class="panel-allergen-row" id="panel-allergen-row"></div>
+    </div>
+
+    <div class="panel-allergen-title">🧄 Ingredients</div>
     <div class="ingredient-list" id="ingredient-list"></div>
     <button id="close-btn" onclick="closePanel()">Close</button>
   </div>
 
   <script>
-   const menuItems = [
+    // All possible allergens with icons
+    const ALL_ALLERGENS = [
+      { key: "gluten",    icon: "🌾", label: "Gluten"    },
+      { key: "dairy",     icon: "🥛", label: "Dairy"     },
+      { key: "nuts",      icon: "🥜", label: "Nuts"      },
+      { key: "eggs",      icon: "🥚", label: "Eggs"      },
+      { key: "soy",       icon: "🫘", label: "Soy"       },
+      { key: "seafood",   icon: "🦐", label: "Seafood"   },
+      { key: "fish",      icon: "🐟", label: "Fish"      }
+    ];
+
+    const menuItems = [
       {
         name: "Margherita Pizza",
         price: "₹299",
-        model: "pizza2.glb",
-        ingredients: ["Tomato Sauce", "Mozzarella", "Fresh Basil", "Olive Oil", "Pizza Dough"]
-      },
-      {
-        name: "Garden Fresh",
-        price: "₹399",
         model: "pizza.glb",
-        ingredients: ["Beef Patty", "Cheddar Cheese", "Lettuce", "Tomato", "Olive Oil", "Pizza Dough"]
+        ingredients: ["Tomato Sauce", "Mozzarella", "Fresh Basil", "Olive Oil", "Pizza Dough"],
+        allergens: ["gluten", "dairy"]
       },
       {
-        name: "Pepperoni Pizza",
-        price: "₹449",
-        model: "pizza1.glb",
-        ingredients: ["Pepperoni", "Olive", "Onion", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"]
+        name: "Classic Burger",
+        price: "₹199",
+        model: "burger.glb",
+        ingredients: ["Beef Patty", "Cheddar Cheese", "Lettuce", "Tomato", "Pickles", "Brioche Bun", "Special Sauce"],
+        allergens: ["gluten", "dairy", "eggs"]
       },
       {
-        name: "Chicken Pizza",
-        price: "₹499",
-        model: "pizza3.glb",
-        ingredients: ["Chicken ", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"]
+        name: "Pasta Arrabbiata",
+        price: "₹249",
+        model: "pasta.glb",
+        ingredients: ["Penne Pasta", "Tomato", "Garlic", "Red Chilli", "Olive Oil", "Parsley"],
+        allergens: ["gluten"]
+      },
+      {
+        name: "Sushi Platter",
+        price: "₹399",
+        model: "sushi.glb",
+        ingredients: ["Sushi Rice", "Nori", "Salmon", "Tuna", "Avocado", "Soy Sauce", "Wasabi", "Ginger"],
+        allergens: ["fish", "seafood", "soy"]
       }
     ];
+
     const BASE_URL = "https://raw.githubusercontent.com/gargsuhani/ar-menu/main/";
     let current = 0;
 
-    // Build dots for both views
+    // Build dots
     function buildDots(containerId) {
       const container = document.getElementById(containerId);
       menuItems.forEach((_, i) => {
@@ -285,6 +394,19 @@
     buildDots("dots");
     buildDots("ar-dots");
 
+    // Build allergen badges for a container
+    function buildAllergenBar(containerId, itemAllergens, small = false) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+      ALL_ALLERGENS.forEach(a => {
+        const contains = itemAllergens.includes(a.key);
+        const badge = document.createElement("div");
+        badge.className = (small ? "ar-allergen-badge" : "allergen-badge") + (contains ? " contains" : " free");
+        badge.innerHTML = `${a.icon} ${a.label}`;
+        container.appendChild(badge);
+      });
+    }
+
     function navigate(direction) {
       current = (current + direction + menuItems.length) % menuItems.length;
       updateDisplay();
@@ -292,21 +414,29 @@
 
     function updateDisplay() {
       const item = menuItems[current];
+
       document.getElementById("viewer").src = BASE_URL + item.model;
       document.getElementById("item-name").textContent = item.name;
       document.getElementById("item-price").textContent = item.price;
       document.getElementById("ar-item-name").textContent = item.name;
 
+      // Update dots
       menuItems.forEach((_, i) => {
         const dot = document.getElementById("dots-dot-" + i);
         const arDot = document.getElementById("ar-dots-dot-" + i);
         if (dot) dot.classList.toggle("active", i === current);
         if (arDot) arDot.classList.toggle("active", i === current);
       });
+
+      // Update allergen bars
+      buildAllergenBar("allergen-bar", item.allergens, false);
+      buildAllergenBar("ar-allergen-bar", item.allergens, true);
     }
 
     function openPanel() {
       const item = menuItems[current];
+
+      // Ingredients
       const list = document.getElementById("ingredient-list");
       list.innerHTML = "";
       item.ingredients.forEach(ing => {
@@ -315,7 +445,11 @@
         tag.textContent = ing;
         list.appendChild(tag);
       });
-      document.getElementById("panel-title").textContent = item.name + " — Ingredients";
+
+      // Allergens inside panel
+      buildAllergenBar("panel-allergen-row", item.allergens, false);
+
+      document.getElementById("panel-title").textContent = item.name;
       document.getElementById("ingredients-panel").classList.add("open");
       document.getElementById("overlay").style.display = "block";
     }
@@ -324,6 +458,10 @@
       document.getElementById("ingredients-panel").classList.remove("open");
       document.getElementById("overlay").style.display = "none";
     }
+
+    // Init
+    buildAllergenBar("allergen-bar", menuItems[0].allergens, false);
+    buildAllergenBar("ar-allergen-bar", menuItems[0].allergens, true);
   </script>
 
 </body>
