@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AR Menu</title>
-
-  <!-- Load model-viewer from Google -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 
   <style>
@@ -16,7 +14,7 @@
     }
 
     body {
-      background: #000;
+      background: #111;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -26,31 +24,155 @@
       color: white;
     }
 
-    h1 {
-      margin-bottom: 20px;
-      font-size: 24px;
+    /* Item name at top */
+    #item-name {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
     }
 
+    #item-price {
+      font-size: 18px;
+      color: #f0a500;
+      margin-bottom: 20px;
+    }
+
+    /* 3D model viewer */
     model-viewer {
-      width: 350px;
-      height: 350px;
+      width: 320px;
+      height: 320px;
+    }
+
+    /* Arrow navigation row */
+    .nav-row {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    .arrow-btn {
+      background: #f0a500;
+      color: #111;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 22px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .arrow-btn:hover {
+      background: #ffbf00;
+    }
+
+    /* Dots indicator */
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #555;
+      transition: background 0.3s;
+    }
+
+    .dot.active {
+      background: #f0a500;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>🍕 Margherita Pizza</h1>
+  <div id="item-name">Margherita Pizza</div>
+  <div id="item-price">₹299</div>
 
- <model-viewer
-  src="https://raw.githubusercontent.com/gargsuhani/ar-menu/main/pizza.glb"
-  alt="A 3D model"
-  auto-rotate
-  camera-controls
-  ar
-  ar-modes="webxr scene-viewer quick-look"
->
-</model-viewer>
+  <model-viewer
+    id="viewer"
+    src="https://raw.githubusercontent.com/gargsuhani/ar-menu/main/pizza.glb"
+    alt="Food item"
+    auto-rotate
+    camera-controls
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+  >
+  </model-viewer>
+
+  <!-- Arrow buttons and dots -->
+  <div class="nav-row">
+    <button class="arrow-btn" onclick="navigate(-1)">←</button>
+    <div class="dots" id="dots"></div>
+    <button class="arrow-btn" onclick="navigate(1)">→</button>
+  </div>
+
+  <script>
+    // ── YOUR MENU DATA ──────────────────────────────
+    const menuItems = [
+      {
+        name: "Margherita Pizza",
+        price: "₹299",
+        model: "pizza.glb"
+      },
+      {
+        name: "Pepperoni Burger",
+        price: "₹199",
+        model: "pizza1.glb"
+      },
+      {
+        name: "Chicken Pizza",
+        price: "₹249",
+        model: "pizza2.glb"
+      },
+      {
+        name: "Garden Fresh",
+        price: "₹399",
+        model: "pizza3.glb"
+      }
+    ];
+    // ───────────────────────────────────────────────
+
+    const BASE_URL = "https://raw.githubusercontent.com/gargsuhani/ar-menu/main/";
+
+    let current = 0;
+
+    // Build dots
+    const dotsContainer = document.getElementById("dots");
+    menuItems.forEach((_, i) => {
+      const dot = document.createElement("div");
+      dot.className = "dot" + (i === 0 ? " active" : "");
+      dot.id = "dot-" + i;
+      dotsContainer.appendChild(dot);
+    });
+
+    // Navigate function
+    function navigate(direction) {
+      current = (current + direction + menuItems.length) % menuItems.length;
+      updateDisplay();
+    }
+
+    // Update everything on screen
+    function updateDisplay() {
+      const item = menuItems[current];
+
+      // Update model
+      document.getElementById("viewer").src = BASE_URL + item.model;
+
+      // Update text
+      document.getElementById("item-name").textContent = item.name;
+      document.getElementById("item-price").textContent = item.price;
+
+      // Update dots
+      document.querySelectorAll(".dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === current);
+      });
+    }
+  </script>
 
 </body>
 </html>
