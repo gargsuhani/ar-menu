@@ -481,8 +481,6 @@
       { key: "nuts",    icon: "🥜", label: "Nuts"    },
       { key: "eggs",    icon: "🥚", label: "Eggs"    },
       { key: "soy",     icon: "🫘", label: "Soy"     },
-      { key: "seafood", icon: "🦐", label: "Seafood" },
-      { key: "fish",    icon: "🐟", label: "Fish"    }
     ];
 
     const SIZES = {
@@ -491,37 +489,37 @@
       large:  "1.5 1.5 1.5"
     };
 
-    const menuItems = [
+   const menuItems = [
       {
         name: "Margherita Pizza",
         price: "₹299",
-        model: "pizza.glb",
-        ingredients: ["Tomato Sauce", "Mozzarella", "Fresh Basil", "Olive Oil", "Pizza Dough"],
-        allergens: ["gluten", "dairy"]
+        model: "pizza2.glb",
+        ingredients: ["Tomato Sauce", "Mozzarella", "Fresh Basil", "Olive Oil", "Pizza Dough"]
+	      allergens: ["gluten", "dairy"]
+
       },
       {
-        name: "Classic Burger",
-        price: "₹199",
-        model: "burger.glb",
-        ingredients: ["Beef Patty", "Cheddar Cheese", "Lettuce", "Tomato", "Pickles", "Brioche Bun", "Special Sauce"],
-        allergens: ["gluten", "dairy", "eggs"]
-      },
-      {
-        name: "Pasta Arrabbiata",
-        price: "₹249",
-        model: "pasta.glb",
-        ingredients: ["Penne Pasta", "Tomato", "Garlic", "Red Chilli", "Olive Oil", "Parsley"],
-        allergens: ["gluten"]
-      },
-      {
-        name: "Sushi Platter",
+        name: "Garden Fresh",
         price: "₹399",
-        model: "sushi.glb",
-        ingredients: ["Sushi Rice", "Nori", "Salmon", "Tuna", "Avocado", "Soy Sauce", "Wasabi", "Ginger"],
-        allergens: ["fish", "seafood", "soy"]
+        model: "pizza.glb",
+        ingredients: ["Beef Patty", "Cheddar Cheese", "Lettuce", "Tomato", "Olive Oil", "Pizza Dough"]
+        allergens: ["gluten", "dairy", "nuts", "soy"]
+      },
+      {
+        name: "Pepperoni Pizza",
+        price: "₹449",
+        model: "pizza1.glb",
+        ingredients: ["Pepperoni", "Olive", "Onion", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"]
+        allergens: ["gluten", "dairy", "soy"]
+      },
+      {
+        name: "Chicken Pizza",
+        price: "₹499",
+        model: "pizza3.glb",
+        ingredients: ["Chicken ", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"]
+        allergens: ["gluten", "dairy", ""]
       }
     ];
-
     const BASE_URL = "https://raw.githubusercontent.com/gargsuhani/ar-menu/main/";
     let current = 0;
     let currentSize = "small";
