@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Menu</title>
+
+  <!-- Load model-viewer from Google -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: sans-serif;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    model-viewer {
+      width: 350px;
+      height: 350px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🍕 Margherita Pizza</h1>
+
+ <model-viewer
+  src="https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb"
+  alt="A 3D model"
+  auto-rotate
+  camera-controls
+  ar
+  ar-modes="webxr scene-viewer quick-look"
+>
+</model-viewer>
+
+</body>
+</html>
