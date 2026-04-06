@@ -10,19 +10,16 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #111;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      background: #000;
+      width: 100vw;
       height: 100vh;
+      overflow: hidden;
       font-family: sans-serif;
       color: white;
-      overflow: hidden;
     }
 
-    /* Loading screen */
-    #loading-screen {
+    /* ── SPLASH SCREEN ─────────────────────────── */
+    #splash {
       position: fixed;
       inset: 0;
       background: #111;
@@ -30,90 +27,104 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 999;
-      transition: opacity 0.6s ease;
+      z-index: 99999;
+      gap: 12px;
     }
 
-    #loading-screen.hidden {
-      opacity: 0;
-      pointer-events: none;
+    #splash.hidden {
+      display: none;
     }
 
-    .loading-logo {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-
-    .loading-title {
-      font-size: 28px;
-      font-weight: bold;
-      color: #f0a500;
-      letter-spacing: 2px;
+    .splash-logo {
+      font-size: 64px;
       margin-bottom: 8px;
     }
 
-    .loading-sub {
+    .splash-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #f0a500;
+      letter-spacing: 4px;
+    }
+
+    .splash-sub {
       font-size: 14px;
       color: #888;
       margin-bottom: 40px;
     }
 
-    .loading-bar-bg {
-      width: 200px;
-      height: 4px;
-      background: #333;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .loading-bar-fill {
-      height: 100%;
-      width: 0%;
+    #start-btn {
       background: #f0a500;
-      border-radius: 2px;
-      animation: loadfill 1.8s ease forwards;
+      color: #111;
+      border: none;
+      padding: 18px 48px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      cursor: pointer;
+      animation: pulse 2s infinite;
     }
 
-    @keyframes loadfill {
-      to { width: 100%; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(240,165,0,0.4); }
+      50% { transform: scale(1.04); box-shadow: 0 0 0 14px rgba(240,165,0,0); }
     }
 
-    /* Main content */
-    #main {
+    /* ── MODEL VIEWER — FULLSCREEN ─────────────── */
+    model-viewer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* ── AR OVERLAY — floats over camera ───────── */
+    .ar-overlay {
+      position: absolute;
+      bottom: 110px;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      opacity: 0;
-      transition: opacity 0.6s ease;
+      gap: 10px;
+      pointer-events: auto;
+      z-index: 10;
     }
 
-    #main.visible { opacity: 1; }
-
-    #item-name {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 4px;
-      letter-spacing: 1px;
-      transition: opacity 0.3s;
-    }
-
-    #item-price {
+    /* Item name pill */
+    .ar-item-name {
+      background: rgba(0,0,0,0.65);
+      color: #fff;
       font-size: 18px;
-      color: #f0a500;
-      margin-bottom: 8px;
+      font-weight: bold;
+      padding: 8px 22px;
+      border-radius: 30px;
+      letter-spacing: 1px;
     }
 
-    /* Allergen bar */
-    .allergen-bar {
+    /* Price pill */
+    .ar-item-price {
+      background: rgba(240,165,0,0.85);
+      color: #111;
+      font-size: 15px;
+      font-weight: bold;
+      padding: 5px 18px;
+      border-radius: 30px;
+    }
+
+    /* ── ALLERGEN BAR ───────────────────────────── */
+    .ar-allergen-bar {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 6px;
-      margin-bottom: 10px;
-      max-width: 320px;
+      padding: 0 12px;
+      max-width: 360px;
     }
 
-    .allergen-badge {
+    .ar-allergen-badge {
       display: flex;
       align-items: center;
       gap: 4px;
@@ -123,57 +134,45 @@
       font-weight: bold;
     }
 
-    .allergen-badge.contains {
-      background: rgba(220, 50, 50, 0.2);
-      border: 1px solid #dc3232;
-      color: #ff6b6b;
+    .ar-allergen-badge.contains {
+      background: rgba(210, 40, 40, 0.88);
+      color: #fff;
     }
 
-    .allergen-badge.free {
-      background: rgba(50, 200, 100, 0.15);
-      border: 1px solid #32c864;
-      color: #5fdd9d;
+    .ar-allergen-badge.free {
+      background: rgba(30, 180, 80, 0.88);
+      color: #fff;
     }
 
-    /* Size selector */
-    .size-row {
+    /* ── SIZE BUTTONS ───────────────────────────── */
+    .ar-size-row {
       display: flex;
       gap: 10px;
-      margin-bottom: 10px;
     }
 
-    .size-btn {
-      background: #1e1e1e;
-      color: #aaa;
-      border: 1px solid #333;
-      padding: 6px 18px;
+    .ar-size-btn {
+      background: rgba(0,0,0,0.6);
+      color: #f0a500;
+      border: 2px solid #f0a500;
+      padding: 6px 20px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 14px;
+      font-weight: bold;
       cursor: pointer;
+      pointer-events: auto;
       transition: all 0.2s;
     }
 
-    .size-btn.active {
+    .ar-size-btn.active {
       background: #f0a500;
       color: #111;
-      border-color: #f0a500;
-      font-weight: bold;
     }
 
-    model-viewer {
-      width: 300px;
-      height: 260px;
-      position: relative;
-      transition: opacity 0.3s;
-    }
-
-    model-viewer.loading { opacity: 0.4; }
-
-    .nav-row {
+    /* ── NAV ROW ────────────────────────────────── */
+    .ar-nav-row {
       display: flex;
       align-items: center;
-      gap: 24px;
-      margin-top: 10px;
+      gap: 20px;
     }
 
     .arrow-btn {
@@ -181,144 +180,64 @@
       color: #111;
       border: none;
       border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      font-size: 20px;
-      cursor: pointer;
+      width: 52px;
+      height: 52px;
+      font-size: 22px;
       font-weight: bold;
-      transition: transform 0.1s, background 0.2s;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: transform 0.1s;
     }
 
-    .arrow-btn:active { transform: scale(0.9); }
-    .arrow-btn:hover { background: #ffbf00; }
+    .arrow-btn:active {
+      transform: scale(0.88);
+    }
 
-    .dots { display: flex; gap: 8px; }
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
 
     .dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: #555;
+      background: rgba(255,255,255,0.35);
       transition: background 0.3s, transform 0.3s;
     }
 
     .dot.active {
       background: #f0a500;
-      transform: scale(1.3);
+      transform: scale(1.4);
     }
 
-    #ingredients-btn {
-      margin-top: 12px;
-      background: transparent;
+    /* ── INGREDIENTS BUTTON ─────────────────────── */
+    #ar-ingredients-btn {
+      background: rgba(0,0,0,0.65);
       border: 2px solid #f0a500;
       color: #f0a500;
-      padding: 9px 26px;
-      border-radius: 25px;
-      font-size: 14px;
+      padding: 10px 28px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
-      letter-spacing: 1px;
-      transition: all 0.3s;
-    }
-
-    #ingredients-btn:hover { background: #f0a500; color: #111; }
-
-    /* AR overlay */
-    .ar-overlay {
-      position: absolute;
-      bottom: 80px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
       pointer-events: auto;
-      z-index: 999;
+      letter-spacing: 1px;
+      transition: all 0.2s;
     }
 
-    .ar-item-name {
-      background: rgba(0,0,0,0.65);
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 7px 18px;
-      border-radius: 20px;
-    }
-
-    .ar-allergen-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 5px;
-      max-width: 320px;
-      padding: 0 10px;
-    }
-
-    .ar-allergen-badge {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 9px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: bold;
-    }
-
-    .ar-allergen-badge.contains {
-      background: rgba(220, 50, 50, 0.85);
-      color: white;
-    }
-
-    .ar-allergen-badge.free {
-      background: rgba(50, 200, 100, 0.85);
-      color: white;
-    }
-
-    /* AR size row */
-    .ar-size-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .ar-size-btn {
-      background: rgba(0,0,0,0.6);
-      color: #f0a500;
-      border: 1px solid #f0a500;
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .ar-size-btn.active {
+    #ar-ingredients-btn:active {
       background: #f0a500;
       color: #111;
-      font-weight: bold;
     }
 
-    .ar-nav-row {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    #ar-ingredients-btn {
-      background: transparent;
-      border: 2px solid #f0a500;
-      color: #f0a500;
-      padding: 7px 20px;
-      border-radius: 25px;
-      font-size: 13px;
-      cursor: pointer;
-      pointer-events: auto;
-    }
-
-    /* Panel */
+    /* ── INGREDIENTS PANEL — fixed over AR ──────── */
     #overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 100;
+      background: rgba(0,0,0,0.55);
+      z-index: 9998;
     }
 
     #ingredients-panel {
@@ -326,56 +245,91 @@
       bottom: -100%;
       left: 0;
       right: 0;
-      background: #1e1e1e;
-      border-radius: 24px 24px 0 0;
-      padding: 28px 24px;
-      z-index: 200;
+      background: #1a1a1a;
+      border-radius: 28px 28px 0 0;
+      padding: 28px 22px 36px;
+      z-index: 9999;
       transition: bottom 0.4s ease;
+      max-height: 75vh;
+      overflow-y: auto;
     }
 
-    #ingredients-panel.open { bottom: 0; }
+    #ingredients-panel.open {
+      bottom: 0;
+    }
+
+    .panel-handle {
+      width: 40px;
+      height: 4px;
+      background: #444;
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
 
     #panel-title {
       font-size: 20px;
       font-weight: bold;
       margin-bottom: 4px;
+      color: #fff;
     }
 
     #panel-subtitle {
       font-size: 12px;
-      color: #888;
-      margin-bottom: 16px;
+      color: #666;
+      margin-bottom: 20px;
     }
 
     .panel-section-title {
-      font-size: 12px;
+      font-size: 11px;
       color: #888;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
     }
 
     .panel-allergen-row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
+    }
+
+    .panel-allergen-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .panel-allergen-badge.contains {
+      background: rgba(210,40,40,0.2);
+      border: 1px solid #dc3232;
+      color: #ff6b6b;
+    }
+
+    .panel-allergen-badge.free {
+      background: rgba(30,180,80,0.15);
+      border: 1px solid #32c864;
+      color: #5fdd9d;
     }
 
     .ingredient-list {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     .ingredient-tag {
       background: #2a2a2a;
       border: 1px solid #333;
-      color: #eee;
-      padding: 7px 14px;
+      color: #ddd;
+      padding: 8px 16px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 14px;
     }
 
     #close-btn {
@@ -383,126 +337,117 @@
       background: #f0a500;
       color: #111;
       border: none;
-      padding: 14px;
-      border-radius: 14px;
+      padding: 15px;
+      border-radius: 16px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    #close-btn:hover { background: #ffbf00; }
+    #close-btn:active {
+      background: #ffbf00;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- Loading screen -->
-  <div id="loading-screen">
-    <div class="loading-logo">🍽️</div>
-    <div class="loading-title">AR MENU</div>
-    <div class="loading-sub">Point your phone at the table</div>
-    <div class="loading-bar-bg">
-      <div class="loading-bar-fill"></div>
-    </div>
+  <!-- ── SPLASH ──────────────────────────────────── -->
+  <div id="splash">
+    <div class="splash-logo">🍽️</div>
+    <div class="splash-title">AR MENU</div>
+    <div class="splash-sub">Point your phone at any flat surface</div>
+    <button id="start-btn" onclick="startAR()">TAP TO START AR</button>
   </div>
 
-  <!-- Main content -->
-  <div id="main">
+  <!-- ── MODEL VIEWER ────────────────────────────── -->
+  <model-viewer
+    id="viewer"
+    src="https://raw.githubusercontent.com/gargsuhani/ar-menu/main/pizza2.glb"
+    alt="Food item"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    camera-controls
+    auto-rotate
+  >
+    <!-- ── EVERYTHING inside here shows in AR ────── -->
+    <div class="ar-overlay" slot="default">
 
-    <div id="item-name">Margherita Pizza</div>
-    <div id="item-price">₹299</div>
+      <!-- Name + Price -->
+      <div class="ar-item-name" id="ar-item-name">Margherita Pizza</div>
+      <div class="ar-item-price" id="ar-item-price">₹299</div>
 
-    <!-- Allergen bar normal view -->
-    <div class="allergen-bar" id="allergen-bar"></div>
+      <!-- Allergen bar -->
+      <div class="ar-allergen-bar" id="ar-allergen-bar"></div>
 
-    <!-- Size selector normal view -->
-    <div class="size-row">
-      <button class="size-btn active" onclick="setSize('small', this)">S</button>
-      <button class="size-btn" onclick="setSize('medium', this)">M</button>
-      <button class="size-btn" onclick="setSize('large', this)">L</button>
-    </div>
-
-    <model-viewer
-      id="viewer"
-      src="https://raw.githubusercontent.com/gargsuhani/ar-menu/main/pizza.glb"
-      alt="Food item"
-      auto-rotate
-      camera-controls
-      ar
-      ar-modes="webxr scene-viewer quick-look"
-      scale="0.8 0.8 0.8"
-    >
-      <div class="ar-overlay" slot="default">
-        <div class="ar-item-name" id="ar-item-name">Margherita Pizza</div>
-        <div class="ar-allergen-bar" id="ar-allergen-bar"></div>
-
-        <!-- Size buttons in AR -->
-        <div class="ar-size-row">
-          <button class="ar-size-btn active" onclick="setSize('small', this, true)">S</button>
-          <button class="ar-size-btn" onclick="setSize('medium', this, true)">M</button>
-          <button class="ar-size-btn" onclick="setSize('large', this, true)">L</button>
-        </div>
-
-        <div class="ar-nav-row">
-          <button class="arrow-btn" onclick="navigate(-1)">←</button>
-          <div class="dots" id="ar-dots"></div>
-          <button class="arrow-btn" onclick="navigate(1)">→</button>
-        </div>
-        <button id="ar-ingredients-btn" onclick="openPanel()">🧾 Ingredients</button>
+      <!-- Size buttons -->
+      <div class="ar-size-row">
+        <button class="ar-size-btn active" onclick="setSize('small', this)">S</button>
+        <button class="ar-size-btn" onclick="setSize('medium', this)">M</button>
+        <button class="ar-size-btn" onclick="setSize('large', this)">L</button>
       </div>
-    </model-viewer>
 
-    <div class="nav-row">
-      <button class="arrow-btn" onclick="navigate(-1)">←</button>
-      <div class="dots" id="dots"></div>
-      <button class="arrow-btn" onclick="navigate(1)">→</button>
+      <!-- Arrows + dots -->
+      <div class="ar-nav-row">
+        <button class="arrow-btn" onclick="navigate(-1)">←</button>
+        <div class="dots" id="dots"></div>
+        <button class="arrow-btn" onclick="navigate(1)">→</button>
+      </div>
+
+      <!-- Ingredients button -->
+      <button id="ar-ingredients-btn" onclick="openPanel()">🧾 Ingredients</button>
+
     </div>
+  </model-viewer>
 
-    <button id="ingredients-btn" onclick="openPanel()">🧾 View Ingredients</button>
-
-  </div>
-
+  <!-- ── INGREDIENTS PANEL — fixed, shows over AR ── -->
   <div id="overlay" onclick="closePanel()"></div>
 
   <div id="ingredients-panel">
+    <div class="panel-handle"></div>
     <div id="panel-title">Margherita Pizza</div>
     <div id="panel-subtitle">Tap outside to close</div>
+
     <div class="panel-section-title">⚠️ Allergens</div>
     <div class="panel-allergen-row" id="panel-allergen-row"></div>
+
     <div class="panel-section-title">🧄 Ingredients</div>
     <div class="ingredient-list" id="ingredient-list"></div>
+
     <button id="close-btn" onclick="closePanel()">Close</button>
   </div>
 
   <script>
+    // ── ALLERGEN MASTER LIST ──────────────────────
     const ALL_ALLERGENS = [
       { key: "gluten",  icon: "🌾", label: "Gluten"  },
       { key: "dairy",   icon: "🥛", label: "Dairy"   },
       { key: "nuts",    icon: "🥜", label: "Nuts"    },
       { key: "eggs",    icon: "🥚", label: "Eggs"    },
-      { key: "soy",     icon: "🫘", label: "Soy"     },
+      { key: "soy",     icon: "🫘", label: "Soy"     }
     ];
 
+    // ── SIZE SCALE VALUES ─────────────────────────
     const SIZES = {
       small:  "0.6 0.6 0.6",
       medium: "1 1 1",
       large:  "1.5 1.5 1.5"
     };
 
-   const menuItems = [
+    // ── MENU DATA ─────────────────────────────────
+    const menuItems = [
       {
         name: "Margherita Pizza",
         price: "₹299",
         model: "pizza2.glb",
         ingredients: ["Tomato Sauce", "Mozzarella", "Fresh Basil", "Olive Oil", "Pizza Dough"],
-	      allergens: ["gluten", "dairy"]
-
+        allergens: ["gluten", "dairy"]
       },
       {
         name: "Garden Fresh",
         price: "₹399",
         model: "pizza.glb",
-        ingredients: ["Beef Patty", "Cheddar Cheese", "Lettuce", "Tomato", "Olive Oil", "Pizza Dough"],
+        ingredients: ["Bell Peppers", "Mushrooms", "Onion", "Mozzarella", "Olive Oil", "Pizza Dough"],
         allergens: ["gluten", "dairy", "nuts", "soy"]
       },
       {
@@ -516,109 +461,91 @@
         name: "Chicken Pizza",
         price: "₹499",
         model: "pizza3.glb",
-        ingredients: ["Chicken ", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"],
+        ingredients: ["Chicken", "Mozzarella", "Tomato Sauce", "Olive Oil", "Pizza Dough"],
         allergens: ["gluten", "dairy"]
       }
     ];
+
     const BASE_URL = "https://raw.githubusercontent.com/gargsuhani/ar-menu/main/";
     let current = 0;
-    let currentSize = "small";
 
-    // Loading screen
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("loading-screen").classList.add("hidden");
-        document.getElementById("main").classList.add("visible");
-      }, 2000);
-    });
+    // ── START AR ──────────────────────────────────
+    function startAR() {
+      document.getElementById("splash").classList.add("hidden");
+      const viewer = document.getElementById("viewer");
 
-    // Build dots
-    function buildDots(containerId) {
-      const container = document.getElementById(containerId);
-      menuItems.forEach((_, i) => {
-        const dot = document.createElement("div");
-        dot.className = "dot" + (i === 0 ? " active" : "");
-        dot.id = containerId + "-dot-" + i;
-        container.appendChild(dot);
-      });
+      if (viewer.loaded) {
+        viewer.activateAR();
+      } else {
+        viewer.addEventListener("load", () => {
+          viewer.activateAR();
+        }, { once: true });
+      }
     }
 
-    buildDots("dots");
-    buildDots("ar-dots");
+    // ── BUILD DOTS ────────────────────────────────
+    const dotsContainer = document.getElementById("dots");
+    menuItems.forEach((_, i) => {
+      const dot = document.createElement("div");
+      dot.className = "dot" + (i === 0 ? " active" : "");
+      dot.id = "dot-" + i;
+      dotsContainer.appendChild(dot);
+    });
 
-    // Build allergen badges
-    function buildAllergenBar(containerId, itemAllergens, small = false) {
+    // ── BUILD ALLERGEN BAR ────────────────────────
+    function buildAllergenBar(containerId, itemAllergens, panelStyle = false) {
       const container = document.getElementById(containerId);
       container.innerHTML = "";
       ALL_ALLERGENS.forEach(a => {
         const contains = itemAllergens.includes(a.key);
         const badge = document.createElement("div");
-        badge.className = (small ? "ar-allergen-badge" : "allergen-badge") + (contains ? " contains" : " free");
+        badge.className = (panelStyle ? "panel-allergen-badge" : "ar-allergen-badge") +
+                          (contains ? " contains" : " free");
         badge.innerHTML = `${a.icon} ${a.label}`;
         container.appendChild(badge);
       });
     }
 
-    // Size selector
-    function setSize(size, btn, isAR = false) {
-      currentSize = size;
-      document.getElementById("viewer").scale = SIZES[size];
-
-      // Update normal size buttons
-      document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".ar-size-btn").forEach(b => b.classList.remove("active"));
-
-      // Activate clicked button and its counterpart
-      if (isAR) {
-        document.querySelectorAll(".ar-size-btn").forEach(b => {
-          if (b.textContent === btn.textContent) b.classList.add("active");
-        });
-        document.querySelectorAll(".size-btn").forEach(b => {
-          if (b.textContent === btn.textContent) b.classList.add("active");
-        });
-      } else {
-        document.querySelectorAll(".size-btn").forEach(b => {
-          if (b.textContent === btn.textContent) b.classList.add("active");
-        });
-        document.querySelectorAll(".ar-size-btn").forEach(b => {
-          if (b.textContent === btn.textContent) b.classList.add("active");
-        });
-      }
-    }
-
+    // ── NAVIGATE ──────────────────────────────────
     function navigate(direction) {
       current = (current + direction + menuItems.length) % menuItems.length;
       updateDisplay();
     }
 
+    // ── UPDATE DISPLAY ────────────────────────────
     function updateDisplay() {
       const item = menuItems[current];
       const viewer = document.getElementById("viewer");
 
-      // Fade model while switching
-      viewer.classList.add("loading");
-      setTimeout(() => viewer.classList.remove("loading"), 500);
-
+      // Swap model
       viewer.src = BASE_URL + item.model;
-      document.getElementById("item-name").textContent = item.name;
-      document.getElementById("item-price").textContent = item.price;
+
+      // Update text
       document.getElementById("ar-item-name").textContent = item.name;
+      document.getElementById("ar-item-price").textContent = item.price;
 
       // Update dots
       menuItems.forEach((_, i) => {
-        const dot = document.getElementById("dots-dot-" + i);
-        const arDot = document.getElementById("ar-dots-dot-" + i);
+        const dot = document.getElementById("dot-" + i);
         if (dot) dot.classList.toggle("active", i === current);
-        if (arDot) arDot.classList.toggle("active", i === current);
       });
 
-      // Update allergen bars
-      buildAllergenBar("allergen-bar", item.allergens, false);
-      buildAllergenBar("ar-allergen-bar", item.allergens, true);
+      // Update allergen bar
+      buildAllergenBar("ar-allergen-bar", item.allergens, false);
     }
 
+    // ── SIZE SELECTOR ─────────────────────────────
+    function setSize(size, btn) {
+      document.getElementById("viewer").scale = SIZES[size];
+      document.querySelectorAll(".ar-size-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    // ── OPEN PANEL ────────────────────────────────
     function openPanel() {
       const item = menuItems[current];
+
+      // Populate ingredients
       const list = document.getElementById("ingredient-list");
       list.innerHTML = "";
       item.ingredients.forEach(ing => {
@@ -627,20 +554,24 @@
         tag.textContent = ing;
         list.appendChild(tag);
       });
-      buildAllergenBar("panel-allergen-row", item.allergens, false);
+
+      // Populate allergens in panel
+      buildAllergenBar("panel-allergen-row", item.allergens, true);
+
       document.getElementById("panel-title").textContent = item.name;
       document.getElementById("ingredients-panel").classList.add("open");
       document.getElementById("overlay").style.display = "block";
     }
 
+    // ── CLOSE PANEL ───────────────────────────────
     function closePanel() {
       document.getElementById("ingredients-panel").classList.remove("open");
       document.getElementById("overlay").style.display = "none";
     }
 
-    // Init
-    buildAllergenBar("allergen-bar", menuItems[0].allergens, false);
-    buildAllergenBar("ar-allergen-bar", menuItems[0].allergens, true);
+    // ── INIT ──────────────────────────────────────
+    buildAllergenBar("ar-allergen-bar", menuItems[0].allergens, false);
+
   </script>
 
 </body>
