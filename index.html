@@ -4,11 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AR Menu</title>
-
-<!-- model-viewer v3.5 – latest stable with best PBR rendering -->
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-
-<!-- Google Fonts: warm, restaurant-grade typography -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -40,32 +36,22 @@ body {
 
 /* ── Loading ── */
 #loading-screen {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 9999;
   transition: opacity 0.7s ease;
 }
 #loading-screen.hidden { opacity: 0; pointer-events: none; }
-
 .loading-logo { font-size: 52px; margin-bottom: 16px; filter: drop-shadow(0 0 18px #f0a50088); }
 .loading-title {
   font-family: 'Playfair Display', serif;
-  font-size: 30px;
-  color: var(--gold);
-  letter-spacing: 4px;
-  margin-bottom: 6px;
+  font-size: 30px; color: var(--gold);
+  letter-spacing: 4px; margin-bottom: 6px;
 }
 .loading-sub { font-size: 13px; color: var(--muted); margin-bottom: 44px; letter-spacing: 1px; }
-.loading-bar-bg {
-  width: 210px; height: 3px;
-  background: #2a2520;
-  border-radius: 2px; overflow: hidden;
-}
+.loading-bar-bg { width: 210px; height: 3px; background: #2a2520; border-radius: 2px; overflow: hidden; }
 .loading-bar-fill {
   height: 100%; width: 0%;
   background: linear-gradient(90deg, var(--gold), var(--gold-light));
@@ -76,33 +62,74 @@ body {
 
 /* ── Main ── */
 #main {
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   align-items: center;
-  opacity: 0;
-  transition: opacity 0.7s ease;
-  width: 100%;
-  padding: 0 16px;
+  opacity: 0; transition: opacity 0.7s ease;
+  width: 100%; padding: 0 16px;
 }
 #main.visible { opacity: 1; }
 
+/* ── Dietary Filter Bar ── */
+.filter-bar {
+  display: flex; gap: 8px;
+  margin-bottom: 10px;
+}
+.filter-btn {
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid #333;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.filter-btn.active {
+  background: var(--gold);
+  color: #111;
+  border-color: var(--gold);
+  font-weight: 700;
+}
+
+/* ── Item Header ── */
+.item-header {
+  display: flex; align-items: center;
+  gap: 8px; margin-bottom: 2px;
+}
 #item-name {
   font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  font-weight: 700;
-  margin-bottom: 2px;
+  font-size: 24px; font-weight: 700;
   letter-spacing: 0.5px;
   text-align: center;
   transition: opacity 0.3s;
 }
-#item-price {
-  font-size: 19px;
-  color: var(--gold);
-  margin-bottom: 10px;
-  font-weight: 500;
+.item-badge {
+  font-size: 11px; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px;
+  white-space: nowrap;
 }
+.badge-popular { background: rgba(240,165,0,0.2); border: 1px solid var(--gold); color: var(--gold); }
+.badge-chef    { background: rgba(82,196,122,0.15); border: 1px solid var(--green); color: var(--green); }
+.badge-new     { background: rgba(130,100,220,0.2); border: 1px solid #9b7fe8; color: #c4a8ff; }
 
-/* Allergen bar */
+/* ── Price + Calories row ── */
+.price-row {
+  display: flex; align-items: center;
+  gap: 14px; margin-bottom: 6px;
+}
+#item-price { font-size: 19px; color: var(--gold); font-weight: 500; }
+#item-calories { font-size: 13px; color: var(--muted); }
+
+/* ── Spice + Prep row ── */
+.meta-row {
+  display: flex; align-items: center;
+  gap: 14px; margin-bottom: 10px;
+}
+#item-spice { font-size: 14px; }
+#item-prep { font-size: 12px; color: var(--muted); }
+
+/* ── Allergen bar ── */
 .allergen-bar {
   display: flex; flex-wrap: wrap;
   justify-content: center;
@@ -111,74 +138,78 @@ body {
 }
 .allergen-badge {
   display: flex; align-items: center; gap: 4px;
-  padding: 4px 11px;
-  border-radius: 20px;
+  padding: 4px 11px; border-radius: 20px;
   font-size: 11px; font-weight: 600;
 }
 .allergen-badge.contains {
   background: rgba(220,82,82,0.15);
-  border: 1px solid var(--red);
-  color: #ff8585;
+  border: 1px solid var(--red); color: #ff8585;
 }
 .allergen-badge.free {
   background: rgba(82,196,122,0.1);
-  border: 1px solid var(--green);
-  color: #6ddb96;
+  border: 1px solid var(--green); color: #6ddb96;
 }
 
-/* Size */
+/* ── Greyed out item ── */
+.greyed model-viewer { opacity: 0.35; filter: grayscale(0.6); }
+.diet-warning {
+  display: none;
+  background: rgba(220,82,82,0.15);
+  border: 1px solid var(--red);
+  color: #ff8585;
+  font-size: 12px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+.diet-warning.visible { display: block; }
+
+/* ── Size ── */
 .size-row { display: flex; gap: 10px; margin-bottom: 10px; }
 .size-btn {
-  background: var(--surface);
-  color: var(--muted);
-  border: 1px solid #333;
-  padding: 6px 20px;
-  border-radius: 20px;
-  font-size: 13px; cursor: pointer;
-  transition: all 0.2s;
-  font-family: 'DM Sans', sans-serif;
+  background: var(--surface); color: var(--muted);
+  border: 1px solid #333; padding: 6px 20px;
+  border-radius: 20px; font-size: 13px; cursor: pointer;
+  transition: all 0.2s; font-family: 'DM Sans', sans-serif;
 }
-.size-btn.active {
-  background: var(--gold); color: #111;
-  border-color: var(--gold); font-weight: 700;
-}
+.size-btn.active { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 700; }
 
-/* ══════════════════════════════════════════
-   MODEL VIEWER  – the visual upgrade core
-   ══════════════════════════════════════════ */
+/* ── Model viewer ── */
 model-viewer {
-  width: 320px;
-  height: 280px;
-  position: relative;
-  transition: opacity 0.35s;
-  /* Subtle dish-plate shadow beneath the model */
+  width: 320px; height: 260px;
+  position: relative; transition: opacity 0.35s;
   filter: drop-shadow(0 22px 28px rgba(0,0,0,0.7));
-  border-radius: 16px;
-  background: transparent;
+  border-radius: 16px; background: transparent;
 }
 model-viewer.loading { opacity: 0.3; }
+model-viewer::part(default-progress-bar) { background: var(--gold); height: 3px; }
 
-/* Progress bar shown while model loads */
-model-viewer::part(default-progress-bar) {
-  background: var(--gold);
-  height: 3px;
-}
-
-/* AR overlay */
+/* ── AR overlay ── */
 .ar-overlay {
-  position: absolute; bottom: 80px;
-  width: 100%;
+  position: absolute; bottom: 80px; width: 100%;
   display: flex; flex-direction: column;
   align-items: center; gap: 8px;
   pointer-events: auto; z-index: 999;
 }
 .ar-item-name {
-  background: rgba(0,0,0,0.7);
-  color: white;
+  background: rgba(0,0,0,0.7); color: white;
   font-family: 'Playfair Display', serif;
   font-size: 16px; font-weight: 600;
   padding: 7px 18px; border-radius: 20px;
 }
+.ar-meta-row {
+  display: flex; gap: 10px; align-items: center;
+}
+.ar-price-pill {
+  background: rgba(240,165,0,0.85); color: #111;
+  font-size: 13px; font-weight: 700;
+  padding: 4px 12px; border-radius: 20px;
+}
+.ar-cal-pill {
+  background: rgba(0,0,0,0.6); color: var(--muted);
+  font-size: 12px; padding: 4px 12px; border-radius: 20px;
+}
+.ar-spice { font-size: 14px; }
 .ar-allergen-bar {
   display: flex; flex-wrap: wrap;
   justify-content: center; gap: 5px;
@@ -193,10 +224,9 @@ model-viewer::part(default-progress-bar) {
 .ar-allergen-badge.free     { background: rgba(82,196,122,0.9); color: white; }
 .ar-size-row { display: flex; gap: 8px; }
 .ar-size-btn {
-  background: rgba(0,0,0,0.65);
-  color: var(--gold); border: 1px solid var(--gold);
-  padding: 5px 14px; border-radius: 20px;
-  font-size: 12px; cursor: pointer;
+  background: rgba(0,0,0,0.65); color: var(--gold);
+  border: 1px solid var(--gold); padding: 5px 14px;
+  border-radius: 20px; font-size: 12px; cursor: pointer;
 }
 .ar-size-btn.active { background: var(--gold); color: #111; font-weight: 700; }
 .ar-nav-row { display: flex; align-items: center; gap: 24px; }
@@ -204,16 +234,12 @@ model-viewer::part(default-progress-bar) {
   background: transparent;
   border: 2px solid var(--gold); color: var(--gold);
   padding: 7px 20px; border-radius: 25px;
-  font-size: 13px; cursor: pointer;
-  pointer-events: auto;
+  font-size: 13px; cursor: pointer; pointer-events: auto;
   font-family: 'DM Sans', sans-serif;
 }
 
-/* Nav */
-.nav-row {
-  display: flex; align-items: center;
-  gap: 24px; margin-top: 10px;
-}
+/* ── Nav ── */
+.nav-row { display: flex; align-items: center; gap: 24px; margin-top: 10px; }
 .arrow-btn {
   background: var(--gold); color: #111;
   border: none; border-radius: 50%;
@@ -224,7 +250,6 @@ model-viewer::part(default-progress-bar) {
 }
 .arrow-btn:active  { transform: scale(0.9); }
 .arrow-btn:hover   { background: var(--gold-light); }
-
 .dots { display: flex; gap: 8px; }
 .dot {
   width: 9px; height: 9px; border-radius: 50%;
@@ -233,30 +258,69 @@ model-viewer::part(default-progress-bar) {
 }
 .dot.active { background: var(--gold); transform: scale(1.35); }
 
+/* ── Bottom buttons row ── */
+.bottom-row {
+  display: flex; gap: 12px; margin-top: 14px; align-items: center;
+}
 #ingredients-btn {
-  margin-top: 14px;
   background: transparent;
   border: 2px solid var(--gold); color: var(--gold);
-  padding: 10px 28px; border-radius: 25px;
-  font-size: 14px; cursor: pointer;
-  letter-spacing: 1px;
-  transition: all 0.3s;
-  font-family: 'DM Sans', sans-serif;
+  padding: 10px 22px; border-radius: 25px;
+  font-size: 14px; cursor: pointer; letter-spacing: 1px;
+  transition: all 0.3s; font-family: 'DM Sans', sans-serif;
 }
 #ingredients-btn:hover { background: var(--gold); color: #111; }
 
-/* ── Panel ── */
-#overlay {
-  display: none; position: fixed;
-  inset: 0; background: rgba(0,0,0,0.6); z-index: 100;
+/* ── Add to Cart button ── */
+#add-cart-btn {
+  background: var(--gold); color: #111;
+  border: none; padding: 10px 22px;
+  border-radius: 25px; font-size: 14px;
+  font-weight: 700; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(240,165,0,0.3);
 }
+#add-cart-btn:hover { background: var(--gold-light); transform: scale(1.03); }
+#add-cart-btn:active { transform: scale(0.96); }
+
+/* ── Floating cart button ── */
+#cart-fab {
+  position: fixed; bottom: 28px; right: 22px;
+  background: var(--gold); color: #111;
+  border: none; border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer; z-index: 500;
+  display: none;
+  align-items: center; gap: 8px;
+  box-shadow: 0 6px 24px rgba(240,165,0,0.45);
+  transition: transform 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+#cart-fab.visible { display: flex; }
+#cart-fab:hover { transform: scale(1.05); }
+#cart-count {
+  background: #111; color: var(--gold);
+  border-radius: 50%; width: 22px; height: 22px;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Panel base ── */
+#overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 100;
+}
+
+/* ── Ingredients Panel ── */
 #ingredients-panel {
-  position: fixed;
-  bottom: -100%; left: 0; right: 0;
+  position: fixed; bottom: -100%; left: 0; right: 0;
   background: var(--surface);
   border-radius: 24px 24px 0 0;
   padding: 28px 24px; z-index: 200;
   transition: bottom 0.4s cubic-bezier(.22,.68,0,1.2);
+  max-height: 75vh; overflow-y: auto;
 }
 #ingredients-panel.open { bottom: 0; }
 #panel-title {
@@ -271,39 +335,108 @@ model-viewer::part(default-progress-bar) {
 .panel-allergen-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
 .ingredient-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
 .ingredient-tag {
-  background: var(--surface2);
-  border: 1px solid #353025;
-  color: var(--text);
-  padding: 7px 14px; border-radius: 20px; font-size: 13px;
+  background: var(--surface2); border: 1px solid #353025;
+  color: var(--text); padding: 7px 14px;
+  border-radius: 20px; font-size: 13px;
 }
 #close-btn {
   width: 100%; background: var(--gold); color: #111;
   border: none; padding: 15px; border-radius: 14px;
   font-size: 16px; font-weight: 700; cursor: pointer;
-  transition: background 0.2s;
-  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s; font-family: 'DM Sans', sans-serif;
 }
 #close-btn:hover { background: var(--gold-light); }
 
-/* Subtle warm glow beneath viewer */
+/* ── Cart Panel ── */
+#cart-panel {
+  position: fixed; bottom: -100%; left: 0; right: 0;
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 28px 24px 36px; z-index: 200;
+  transition: bottom 0.4s cubic-bezier(.22,.68,0,1.2);
+  max-height: 80vh; overflow-y: auto;
+}
+#cart-panel.open { bottom: 0; }
+.cart-panel-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; margin-bottom: 4px;
+}
+.cart-panel-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+#cart-items-list { margin-bottom: 20px; }
+.cart-item {
+  display: flex; justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #2a2520;
+}
+.cart-item-left { display: flex; flex-direction: column; gap: 3px; }
+.cart-item-name { font-size: 15px; font-weight: 600; }
+.cart-item-meta { font-size: 12px; color: var(--muted); }
+.cart-item-right { display: flex; align-items: center; gap: 10px; }
+.cart-item-price { font-size: 15px; color: var(--gold); font-weight: 600; }
+.cart-remove-btn {
+  background: rgba(220,82,82,0.15); border: 1px solid var(--red);
+  color: var(--red); border-radius: 50%;
+  width: 26px; height: 26px;
+  font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.cart-empty {
+  text-align: center; color: var(--muted);
+  padding: 30px 0; font-size: 14px;
+}
+.cart-total-row {
+  display: flex; justify-content: space-between;
+  padding: 14px 0; border-top: 1px solid #2a2520;
+  margin-bottom: 16px;
+}
+.cart-total-label { font-size: 15px; color: var(--muted); }
+.cart-total-value { font-size: 18px; font-weight: 700; color: var(--gold); }
+#place-order-btn {
+  width: 100%; background: var(--gold); color: #111;
+  border: none; padding: 15px; border-radius: 14px;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+  margin-bottom: 10px;
+}
+#place-order-btn:hover { background: var(--gold-light); }
+#clear-cart-btn {
+  width: 100%; background: transparent;
+  border: 1px solid #333; color: var(--muted);
+  padding: 11px; border-radius: 14px;
+  font-size: 14px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Order Confirmation Toast ── */
+#toast {
+  position: fixed; bottom: 100px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--green); color: #111;
+  padding: 12px 24px; border-radius: 30px;
+  font-size: 14px; font-weight: 700;
+  opacity: 0; transition: all 0.3s; z-index: 9999;
+  pointer-events: none; white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Viewer wrap glow ── */
 .viewer-wrap {
   position: relative;
   display: flex; align-items: center; justify-content: center;
 }
 .viewer-wrap::after {
   content: '';
-  position: absolute;
-  bottom: -12px;
+  position: absolute; bottom: -12px;
   width: 200px; height: 28px;
   background: radial-gradient(ellipse, rgba(240,165,0,0.18) 0%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
+  border-radius: 50%; pointer-events: none;
 }
 </style>
 </head>
 <body>
 
-<!-- Loading -->
+<!-- ── Loading ── -->
 <div id="loading-screen">
   <div class="loading-logo">🍽️</div>
   <div class="loading-title">AR MENU</div>
@@ -311,86 +444,125 @@ model-viewer::part(default-progress-bar) {
   <div class="loading-bar-bg"><div class="loading-bar-fill"></div></div>
 </div>
 
-<!-- Main -->
+<!-- ── Main ── -->
 <div id="main">
-  <div id="item-name">Margherita Pizza</div>
-  <div id="item-price">₹299</div>
+
+  <!-- Dietary filter -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('all', this)">🍽 All</button>
+    <button class="filter-btn" onclick="setFilter('vegan', this)">🌱 Vegan</button>
+    <button class="filter-btn" onclick="setFilter('glutenfree', this)">🌾 Gluten-Free</button>
+  </div>
+
+  <!-- Diet warning -->
+  <div class="diet-warning" id="diet-warning">⚠️ This item doesn't match your filter</div>
+
+  <!-- Item name + badge -->
+  <div class="item-header">
+    <div id="item-name">Margherita Pizza</div>
+    <div id="item-badge" class="item-badge badge-popular">🔥 Popular</div>
+  </div>
+
+  <!-- Price + Calories -->
+  <div class="price-row">
+    <div id="item-price">₹299</div>
+    <div id="item-calories">🔥 520 kcal</div>
+  </div>
+
+  <!-- Spice + Prep time -->
+  <div class="meta-row">
+    <div id="item-spice">🌶️ Mild</div>
+    <div id="item-prep">⏱ Ready in 15 mins</div>
+  </div>
+
+  <!-- Allergen bar -->
   <div class="allergen-bar" id="allergen-bar"></div>
 
+  <!-- Size selector -->
   <div class="size-row">
     <button class="size-btn active" onclick="setSize('small',this)">S</button>
     <button class="size-btn"        onclick="setSize('medium',this)">M</button>
     <button class="size-btn"        onclick="setSize('large',this)">L</button>
   </div>
 
+  <!-- Model viewer -->
   <div class="viewer-wrap">
-    <!--
-      KEY VISUAL UPGRADES IN THIS TAG:
-      ─────────────────────────────────────────────────────
-      environment-image   → neutral.hdr from KhronosGroup
-                            gives warm studio-booth lighting,
-                            makes cheese/sauce look glossy & real
-      exposure            → 1.1  slightly brighter than default
-      shadow-intensity    → 1.2  strong ground shadow = grounded feel
-      shadow-softness     → 0.8  blurred soft shadow like spotlit table
-      tone-mapping        → commerce  (optimised for food & product)
-      interpolation-decay → smooth rotation deceleration
-      min-camera-orbit    → locks vertical to a flattering pizza angle
-      max-camera-orbit    → prevents flipping upside-down
-      ─────────────────────────────────────────────────────
-    -->
     <model-viewer
       id="viewer"
-      src="https://raw.githubusercontent.com/gargsuhani/ar-menu/main/pizza.glb"
+      src="https://raw.githubusercontent.com/gargsuhani/ar-menu/main/pizza2.glb"
       alt="Food item"
-      auto-rotate
-      auto-rotate-delay="500"
+      auto-rotate auto-rotate-delay="500"
       rotation-per-second="12deg"
       camera-controls
-      ar
-      ar-modes="webxr scene-viewer quick-look"
-      scale="0.8 0.8 0.8"
-
+      ar ar-modes="webxr scene-viewer quick-look"
+      scale="0.6 0.6 0.6"
       environment-image="https://modelviewer.dev/shared-assets/environments/neutral.hdr"
       exposure="1.15"
       shadow-intensity="1.3"
       shadow-softness="0.85"
       tone-mapping="commerce"
       interpolation-decay="150"
-
       min-camera-orbit="auto 60deg auto"
       max-camera-orbit="auto 90deg auto"
       camera-orbit="0deg 75deg 1.5m"
     >
-      <!-- AR overlay -->
+      <!-- AR overlay — everything in here shows over camera -->
       <div class="ar-overlay" slot="default">
         <div class="ar-item-name" id="ar-item-name">Margherita Pizza</div>
+
+        <div class="ar-meta-row">
+          <div class="ar-price-pill" id="ar-item-price">₹299</div>
+          <div class="ar-cal-pill" id="ar-item-calories">520 kcal</div>
+          <div class="ar-spice" id="ar-item-spice">🌶️</div>
+        </div>
+
         <div class="ar-allergen-bar" id="ar-allergen-bar"></div>
+
         <div class="ar-size-row">
           <button class="ar-size-btn active" onclick="setSize('small',this,true)">S</button>
           <button class="ar-size-btn"        onclick="setSize('medium',this,true)">M</button>
           <button class="ar-size-btn"        onclick="setSize('large',this,true)">L</button>
         </div>
+
         <div class="ar-nav-row">
           <button class="arrow-btn" onclick="navigate(-1)">←</button>
           <div class="dots" id="ar-dots"></div>
           <button class="arrow-btn" onclick="navigate(1)">→</button>
         </div>
+
         <button id="ar-ingredients-btn" onclick="openPanel()">🧾 Ingredients</button>
       </div>
     </model-viewer>
   </div>
 
+  <!-- Nav dots -->
   <div class="nav-row">
     <button class="arrow-btn" onclick="navigate(-1)">←</button>
     <div class="dots" id="dots"></div>
     <button class="arrow-btn" onclick="navigate(1)">→</button>
   </div>
 
-  <button id="ingredients-btn" onclick="openPanel()">🧾 View Ingredients</button>
+  <!-- Bottom buttons -->
+  <div class="bottom-row">
+    <button id="ingredients-btn" onclick="openPanel()">🧾 Ingredients</button>
+    <button id="add-cart-btn" onclick="addToCart()">🛒 Add to Cart</button>
+  </div>
+
 </div>
 
-<div id="overlay" onclick="closePanel()"></div>
+<!-- Floating cart FAB -->
+<button id="cart-fab" onclick="openCart()">
+  🛒 My Order
+  <div id="cart-count">0</div>
+</button>
+
+<!-- Toast -->
+<div id="toast">✓ Added to order!</div>
+
+<!-- Shared overlay -->
+<div id="overlay" onclick="closeAll()"></div>
+
+<!-- Ingredients panel -->
 <div id="ingredients-panel">
   <div id="panel-title">Margherita Pizza</div>
   <div id="panel-subtitle">Tap outside to close</div>
@@ -398,10 +570,24 @@ model-viewer::part(default-progress-bar) {
   <div class="panel-allergen-row" id="panel-allergen-row"></div>
   <div class="panel-section-title">🧄 Ingredients</div>
   <div class="ingredient-list" id="ingredient-list"></div>
-  <button id="close-btn" onclick="closePanel()">Close</button>
+  <button id="close-btn" onclick="closeAll()">Close</button>
+</div>
+
+<!-- Cart panel -->
+<div id="cart-panel">
+  <div class="cart-panel-title">🛒 Your Order</div>
+  <div class="cart-panel-sub">Review and place your order</div>
+  <div id="cart-items-list"></div>
+  <div class="cart-total-row">
+    <div class="cart-total-label">Total</div>
+    <div class="cart-total-value" id="cart-total">₹0</div>
+  </div>
+  <button id="place-order-btn" onclick="placeOrder()">Place Order</button>
+  <button id="clear-cart-btn" onclick="clearCart()">Clear Order</button>
 </div>
 
 <script>
+/* ── DATA ─────────────────────────────────────── */
 const ALL_ALLERGENS = [
   { key:"gluten", icon:"🌾", label:"Gluten" },
   { key:"dairy",  icon:"🥛", label:"Dairy"  },
@@ -416,38 +602,70 @@ const SIZES = {
   large:  "1.5 1.5 1.5"
 };
 
+const SPICE_DISPLAY = {
+  none:   "No Spice",
+  mild:   "🌶️ Mild",
+  medium: "🌶️🌶️ Medium",
+  hot:    "🌶️🌶️🌶️ Hot"
+};
+
 const menuItems = [
   {
-    name:"Margherita Pizza", price:"₹299",
-    model:"pizza2.glb",
-    ingredients:["Tomato Sauce","Mozzarella","Fresh Basil","Olive Oil","Pizza Dough"],
-    allergens:["gluten","dairy"]
+    name: "Margherita Pizza",
+    price: "₹299", priceNum: 299,
+    model: "pizza2.glb",
+    calories: 520,
+    spice: "mild",
+    prepTime: "15 mins",
+    badge: { label: "🔥 Popular", type: "badge-popular" },
+    vegan: false, glutenFree: false,
+    ingredients: ["Tomato Sauce","Mozzarella","Fresh Basil","Olive Oil","Pizza Dough"],
+    allergens: ["gluten","dairy"]
   },
   {
-    name:"Garden Fresh", price:"₹399",
-    model:"pizza.glb",
-    ingredients:["Bell Peppers","Mushrooms","Olives","Mozzarella","Olive Oil","Pizza Dough"],
-    allergens:["gluten","dairy","nuts","soy"]
+    name: "Garden Fresh",
+    price: "₹399", priceNum: 399,
+    model: "pizza.glb",
+    calories: 440,
+    spice: "none",
+    prepTime: "12 mins",
+    badge: { label: "🌱 Vegan", type: "badge-chef" },
+    vegan: true, glutenFree: false,
+    ingredients: ["Bell Peppers","Mushrooms","Olives","Vegan Cheese","Olive Oil","Pizza Dough"],
+    allergens: ["gluten"]
   },
   {
-    name:"Pepperoni Pizza", price:"₹449",
-    model:"pizza1.glb",
-    ingredients:["Pepperoni","Olive","Onion","Mozzarella","Tomato Sauce","Olive Oil","Pizza Dough"],
-    allergens:["gluten","dairy","soy"]
+    name: "Pepperoni Pizza",
+    price: "₹449", priceNum: 449,
+    model: "pizza1.glb",
+    calories: 680,
+    spice: "medium",
+    prepTime: "18 mins",
+    badge: { label: "👨‍🍳 Chef's Special", type: "badge-chef" },
+    vegan: false, glutenFree: false,
+    ingredients: ["Pepperoni","Olive","Onion","Mozzarella","Tomato Sauce","Olive Oil","Pizza Dough"],
+    allergens: ["gluten","dairy","soy"]
   },
   {
-    name:"Chicken Pizza", price:"₹499",
-    model:"pizza3.glb",
-    ingredients:["Chicken","Mozzarella","Tomato Sauce","Olive Oil","Pizza Dough"],
-    allergens:["gluten","dairy"]
+    name: "Chicken Pizza",
+    price: "₹499", priceNum: 499,
+    model: "pizza3.glb",
+    calories: 610,
+    spice: "hot",
+    prepTime: "20 mins",
+    badge: { label: "✨ New", type: "badge-new" },
+    vegan: false, glutenFree: false,
+    ingredients: ["Grilled Chicken","Mozzarella","Tomato Sauce","Jalapeños","Olive Oil","Pizza Dough"],
+    allergens: ["gluten","dairy"]
   }
 ];
 
 const BASE_URL = "https://raw.githubusercontent.com/gargsuhani/ar-menu/main/";
 let current = 0;
-let currentSize = "small";
+let currentFilter = "all";
+let cart = [];
 
-// Loading screen
+/* ── LOADING ─────────────────────────────────── */
 window.addEventListener("load", () => {
   setTimeout(() => {
     document.getElementById("loading-screen").classList.add("hidden");
@@ -455,6 +673,7 @@ window.addEventListener("load", () => {
   }, 2200);
 });
 
+/* ── DOTS ────────────────────────────────────── */
 function buildDots(id) {
   const c = document.getElementById(id);
   menuItems.forEach((_, i) => {
@@ -464,8 +683,10 @@ function buildDots(id) {
     c.appendChild(d);
   });
 }
-buildDots("dots"); buildDots("ar-dots");
+buildDots("dots");
+buildDots("ar-dots");
 
+/* ── ALLERGEN BAR ────────────────────────────── */
 function buildAllergenBar(id, allergens, small=false) {
   const c = document.getElementById(id);
   c.innerHTML = "";
@@ -478,39 +699,162 @@ function buildAllergenBar(id, allergens, small=false) {
   });
 }
 
+/* ── DIETARY FILTER ──────────────────────────── */
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  updateDietWarning();
+}
+
+function itemPassesFilter(item) {
+  if (currentFilter === "all") return true;
+  if (currentFilter === "vegan") return item.vegan;
+  if (currentFilter === "glutenfree") return item.glutenFree;
+  return true;
+}
+
+function updateDietWarning() {
+  const passes = itemPassesFilter(menuItems[current]);
+  document.getElementById("diet-warning").classList.toggle("visible", !passes);
+}
+
+/* ── SIZE ────────────────────────────────────── */
 function setSize(size, btn, isAR=false) {
-  currentSize = size;
   document.getElementById("viewer").scale = SIZES[size];
-  document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active"));
-  document.querySelectorAll(".ar-size-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".size-btn, .ar-size-btn").forEach(b => b.classList.remove("active"));
   const label = btn.textContent;
   document.querySelectorAll(".size-btn, .ar-size-btn").forEach(b => {
     if (b.textContent === label) b.classList.add("active");
   });
 }
 
+/* ── NAVIGATE ────────────────────────────────── */
 function navigate(dir) {
   current = (current + dir + menuItems.length) % menuItems.length;
   updateDisplay();
 }
 
+/* ── UPDATE DISPLAY ──────────────────────────── */
 function updateDisplay() {
   const item = menuItems[current];
   const viewer = document.getElementById("viewer");
+
   viewer.classList.add("loading");
   setTimeout(() => viewer.classList.remove("loading"), 500);
   viewer.src = BASE_URL + item.model;
+
+  // Normal view
   document.getElementById("item-name").textContent = item.name;
   document.getElementById("item-price").textContent = item.price;
+  document.getElementById("item-calories").textContent = `🔥 ${item.calories} kcal`;
+  document.getElementById("item-spice").textContent = SPICE_DISPLAY[item.spice];
+  document.getElementById("item-prep").textContent = `⏱ Ready in ${item.prepTime}`;
+
+  // Badge
+  const badge = document.getElementById("item-badge");
+  badge.textContent = item.badge.label;
+  badge.className = "item-badge " + item.badge.type;
+
+  // AR view
   document.getElementById("ar-item-name").textContent = item.name;
+  document.getElementById("ar-item-price").textContent = item.price;
+  document.getElementById("ar-item-calories").textContent = `${item.calories} kcal`;
+  document.getElementById("ar-item-spice").textContent =
+    item.spice === "none" ? "" :
+    item.spice === "mild" ? "🌶️" :
+    item.spice === "medium" ? "🌶️🌶️" : "🌶️🌶️🌶️";
+
+  // Dots
   menuItems.forEach((_, i) => {
     document.getElementById("dots-dot-" + i)?.classList.toggle("active", i === current);
     document.getElementById("ar-dots-dot-" + i)?.classList.toggle("active", i === current);
   });
+
+  // Allergens
   buildAllergenBar("allergen-bar", item.allergens, false);
   buildAllergenBar("ar-allergen-bar", item.allergens, true);
+
+  // Diet warning
+  updateDietWarning();
 }
 
+/* ── CART ────────────────────────────────────── */
+function addToCart() {
+  const item = menuItems[current];
+  const existing = cart.find(c => c.name === item.name);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ name: item.name, price: item.price, priceNum: item.priceNum, qty: 1 });
+  }
+  updateCartFAB();
+  showToast(`✓ ${item.name} added!`);
+}
+
+function updateCartFAB() {
+  const total = cart.reduce((sum, i) => sum + i.qty, 0);
+  const fab = document.getElementById("cart-fab");
+  document.getElementById("cart-count").textContent = total;
+  fab.classList.toggle("visible", total > 0);
+}
+
+function openCart() {
+  renderCartItems();
+  document.getElementById("cart-panel").classList.add("open");
+  document.getElementById("overlay").style.display = "block";
+}
+
+function renderCartItems() {
+  const list = document.getElementById("cart-items-list");
+  list.innerHTML = "";
+
+  if (cart.length === 0) {
+    list.innerHTML = '<div class="cart-empty">No items yet. Add something! 🍕</div>';
+    document.getElementById("cart-total").textContent = "₹0";
+    return;
+  }
+
+  cart.forEach((item, idx) => {
+    const row = document.createElement("div");
+    row.className = "cart-item";
+    row.innerHTML = `
+      <div class="cart-item-left">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">Qty: ${item.qty} × ${item.price}</div>
+      </div>
+      <div class="cart-item-right">
+        <div class="cart-item-price">₹${item.priceNum * item.qty}</div>
+        <button class="cart-remove-btn" onclick="removeFromCart(${idx})">✕</button>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+
+  const total = cart.reduce((sum, i) => sum + i.priceNum * i.qty, 0);
+  document.getElementById("cart-total").textContent = `₹${total}`;
+}
+
+function removeFromCart(idx) {
+  cart.splice(idx, 1);
+  renderCartItems();
+  updateCartFAB();
+}
+
+function clearCart() {
+  cart = [];
+  renderCartItems();
+  updateCartFAB();
+}
+
+function placeOrder() {
+  if (cart.length === 0) return;
+  clearCart();
+  closeAll();
+  showToast("🎉 Order placed! See you soon.");
+}
+
+/* ── PANELS ──────────────────────────────────── */
 function openPanel() {
   const item = menuItems[current];
   const list = document.getElementById("ingredient-list");
@@ -526,12 +870,21 @@ function openPanel() {
   document.getElementById("overlay").style.display = "block";
 }
 
-function closePanel() {
+function closeAll() {
   document.getElementById("ingredients-panel").classList.remove("open");
+  document.getElementById("cart-panel").classList.remove("open");
   document.getElementById("overlay").style.display = "none";
 }
 
-// Init
+/* ── TOAST ───────────────────────────────────── */
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ── INIT ────────────────────────────────────── */
 buildAllergenBar("allergen-bar", menuItems[0].allergens, false);
 buildAllergenBar("ar-allergen-bar", menuItems[0].allergens, true);
 </script>
